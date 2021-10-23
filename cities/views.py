@@ -3,13 +3,15 @@ from django.shortcuts import get_object_or_404, render
 from cities.forms import CityForm
 from cities.models import City
 from django.views.generic.detail import DetailView
+from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+from django.core.paginator import Paginator
 
 # Create your views here.
 
 __all__ = (
-    'home', 'CityDetailView', 'CityCreateView','CityUpdateView', 'CityDeleteView',
+    'home', 'CityDetailView', 'CityCreateView','CityUpdateView', 'CityDeleteView', 'CityListView', 
 )
 
 def home(request, pk=None):
@@ -24,7 +26,10 @@ def home(request, pk=None):
     #     return render(request, 'cities/detail.html', context)
     form = CityForm()
     cities = City.objects.all()
-    context = {'objects_list': cities, 'form': form}
+    content_list = Paginator(cities, 2)
+    page_number = request.GET.get('page')
+    page_obj = content_list.get_page(page_number)
+    context = {'page_obj': page_obj, 'form': form}
     return render(request, 'cities/home.html', context)
 
 class CityDetailView(DetailView):
@@ -53,3 +58,14 @@ class CityDeleteView(DeleteView):
 
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
+
+class CityListView(ListView):
+    paginate_by = 2
+    model = City
+    template_name = 'cities/home.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        form = CityForm
+        context['form'] = form
+        return context

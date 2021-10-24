@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib import messages
 from routes.forms import RouteForm
-from utils import get_routes
+from routes.utils import get_routes
 
 # Create your views here.
 

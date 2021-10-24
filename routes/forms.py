@@ -1,6 +1,9 @@
 from django import forms
+from django.db.models import fields
 from django.forms import widgets
 from cities.models import City
+from routes.models import Route
+from trains.models import Train
 
 
 class RouteForm(forms.Form):
@@ -18,3 +21,27 @@ class RouteForm(forms.Form):
     traveling_time = forms.IntegerField(label='Время в пути', widget=forms.NumberInput(
         attrs={'class': 'form-control', 'placeholder': 'Время в пути'}
     ))
+
+
+class RouteModelForm(forms.ModelForm):
+    name = forms.CharField(
+        label='Название маршрута',
+        widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Введите название маршрута'}
+    ))
+    from_city = forms.ModelChoiceField(queryset=City.objects.all(), widget=forms.HiddenInput()
+    )
+    to_city = forms.ModelChoiceField(queryset=City.objects.all(), widget=forms.HiddenInput()
+    )
+    trains = forms.ModelMultipleChoiceField(
+        label='Через города', queryset=Train.objects.all(),
+        required=False, widget=forms.SelectMultiple(
+            attrs={'class': 'form-control d-none'}
+    ))
+    route_travel_time = forms.IntegerField(widget=forms.HiddenInput()
+    )
+
+    class Meta:
+        model = Route
+        fields = '__all__'

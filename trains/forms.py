@@ -3,7 +3,6 @@ from cities.models import City
 from trains.models import Train
 
 
-
 class TrainForm(forms.ModelForm):
     name = forms.CharField(label="Номер поезда", widget=forms.TextInput(attrs={
         'class': 'form-control',

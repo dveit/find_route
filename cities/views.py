@@ -1,5 +1,5 @@
-from django.db.models import query
-from django.shortcuts import get_object_or_404, render
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render
 from cities.forms import CityForm
 from cities.models import City
 from django.views.generic.detail import DetailView
@@ -15,6 +15,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 __all__ = (
     'home', 'CityDetailView', 'CityCreateView','CityUpdateView', 'CityDeleteView', 'CityListView', 
 )
+
 
 def home(request, pk=None):
     if request.method == 'POST':
@@ -34,12 +35,13 @@ def home(request, pk=None):
     context = {'page_obj': page_obj, 'form': form}
     return render(request, 'cities/home.html', context)
 
+
 class CityDetailView(DetailView):
     queryset = City.objects.all()
     template_name = 'cities/detail.html'
 
 
-class CityCreateView(SuccessMessageMixin, CreateView):
+class CityCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = City
     form_class = CityForm
     template_name = 'cities/create.html'
@@ -47,7 +49,7 @@ class CityCreateView(SuccessMessageMixin, CreateView):
     success_message = "Город успешно создан"
 
 
-class CityUpdateView(SuccessMessageMixin, UpdateView):
+class CityUpdateView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = City
     form_class = CityForm
     template_name = 'cities/update.html'
@@ -55,7 +57,7 @@ class CityUpdateView(SuccessMessageMixin, UpdateView):
     success_message = "Город успешно отредактирован"
 
 
-class CityDeleteView(DeleteView):
+class CityDeleteView(LoginRequiredMixin, DeleteView):
     model = City
     # template_name = 'cities/delete.html'
     success_url = reverse_lazy('cities:home')
@@ -63,6 +65,7 @@ class CityDeleteView(DeleteView):
     def get(self, request, *args, **kwargs):
         messages.success(request, "Город успешно удален")
         return self.post(request, *args, **kwargs)
+
 
 class CityListView(ListView):
     paginate_by = 2

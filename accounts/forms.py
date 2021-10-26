@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.hashers import check_password
-from django.core.exceptions import ValidationError
 
 
 User = get_user_model()
@@ -28,5 +27,31 @@ class UserLoginForm(forms.Form):
                 raise forms.ValidationError('Неверный пароль')
             user = authenticate(username=username, password=password)
             if not user:
-                raise forms.ValidationError('Данный пользователь не активен')
+                raise forms.ValidationError('Данный пользователь неактивен')
         return super().clean(*args, **kwargs)
+
+
+class UserRegistrationForm(forms.ModelForm):
+    username = forms.CharField(label='username', widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Введите username'
+    }))
+    password = forms.CharField(label='password', widget=forms.PasswordInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Введите password'
+    }))
+    confirm_password = forms.CharField(label='password', widget=forms.PasswordInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Введите password повтрорно'
+    }))
+
+    class Meta:
+        model = User
+        fields = ('username',)
+
+    def clean_password(self):
+        password = self.data["password"]
+        confirm_password = self.data["confirm_password"]
+        if password != confirm_password:
+            raise forms.ValidationError('Пароли не совпадают')
+        return confirm_password

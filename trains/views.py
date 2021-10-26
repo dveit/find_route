@@ -1,5 +1,5 @@
-from django.db.models import query
-from django.shortcuts import get_object_or_404, render
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.core.paginator import Paginator
 from django.contrib import messages
@@ -16,6 +16,7 @@ __all__ = (
     'TrainCreateView','TrainUpdateView', 'TrainDeleteView', 
 )
 
+
 def home(request, pk=None):
     trains = Train.objects.all()
     content_list = Paginator(trains, 2)
@@ -24,14 +25,17 @@ def home(request, pk=None):
     context = {'page_obj': page_obj,}
     return render(request, 'trains/home.html', context)
 
+
 class TrainListView(ListView):
     paginate_by = 5
     model = Train
     template_name = 'trains/home.html'
 
+
 class TrainDetailView(DetailView):
     queryset = Train.objects.all()
     template_name = 'trains/detail.html'
+
 
 class TrainDeleteView(DeleteView):
     model = Train
@@ -42,14 +46,16 @@ class TrainDeleteView(DeleteView):
         messages.success(request, "Поезд успешно удален")
         return self.post(request, *args, **kwargs)
 
-class TrainCreateView(SuccessMessageMixin, CreateView):
+
+class TrainCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Train
     form_class = TrainForm
     template_name = 'trains/create.html'
     success_url = reverse_lazy('trains:home')
     success_message = "Поезд успешно создан"
 
-class TrainUpdateView(SuccessMessageMixin, UpdateView):
+
+class TrainUpdateView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Train
     form_class = TrainForm
     template_name = 'trains/update.html'

@@ -1,11 +1,14 @@
-from django.shortcuts import redirect, render
 from django.contrib import messages
-from django.views.generic import ListView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
+from django.views.generic import DeleteView, DetailView, ListView
+
+from cities.models import City
+from trains.models import Train
+from routes.models import Route
 from routes.forms import RouteForm, RouteModelForm
 from routes.utils import get_routes
-from trains.models import Train
-from cities.models import City
-from routes.models import Route
 
 # Create your views here.
 
@@ -79,3 +82,12 @@ class RouteListView(ListView):
 class RouteDetailView(DetailView):
     queryset = Route.objects.all()
     template_name = 'routes/detail.html'
+
+
+class RouteDeleteView(LoginRequiredMixin, DeleteView):
+    model = Route
+    success_url = reverse_lazy('home')
+
+    def get(self, request, *args, **kwargs):
+        messages.success(request, "Маршрут успешно удален")
+        return self.post(request, *args, **kwargs)

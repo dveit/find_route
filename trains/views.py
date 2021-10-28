@@ -13,16 +13,16 @@ from trains.forms import TrainForm
 
 __all__ = (
     'home', 'TrainListView', 'TrainDetailView', 
-    'TrainCreateView','TrainUpdateView', 'TrainDeleteView', 
+    'TrainCreateView', 'TrainUpdateView', 'TrainDeleteView',
 )
 
 
-def home(request, pk=None):
+def home(request):
     trains = Train.objects.all()
     content_list = Paginator(trains, 2)
     page_number = request.GET.get('page')
     page_obj = content_list.get_page(page_number)
-    context = {'page_obj': page_obj,}
+    context = {'page_obj': page_obj, }
     return render(request, 'trains/home.html', context)
 
 

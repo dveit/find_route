@@ -7,7 +7,7 @@ from django.urls import reverse
 class City(models.Model):
     name = models.CharField(max_length=50, unique=True, verbose_name='Город')
 
-    def __str__(self) -> str:
+    def __str__(self):
         return self.name
 
     class Meta:

@@ -13,7 +13,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 # Create your views here.
 
 __all__ = (
-    'home', 'CityDetailView', 'CityCreateView','CityUpdateView', 'CityDeleteView', 'CityListView', 
+    'home', 'CityDetailView', 'CityCreateView', 'CityUpdateView', 'CityDeleteView', 'CityListView',
 )
 
 

@@ -2,19 +2,21 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from cities.models import City
 
+
 # Create your models here.
+
 
 class Train(models.Model):
     name = models.CharField(max_length=50, unique=True, verbose_name='Номер поезда')
     travel_time = models.PositiveSmallIntegerField(verbose_name='Время в пути')
     from_city = models.ForeignKey(City, on_delete=models.CASCADE,
-                                    related_name='from_city_set',
-                                    verbose_name='Откуда'
-                                    )
+                                  related_name='from_city_set',
+                                  verbose_name='Откуда'
+                                  )
     to_city = models.ForeignKey('cities.City', on_delete=models.CASCADE,
-                                    related_name='to_city_set',
-                                    verbose_name='Куда'
-                                    )
+                                related_name='to_city_set',
+                                verbose_name='Куда'
+                                )
 
     def __str__(self) -> str:
         return f'Поезд №{self.name} из города {self.from_city}'

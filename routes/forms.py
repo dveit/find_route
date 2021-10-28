@@ -1,6 +1,4 @@
 from django import forms
-from django.db.models import fields
-from django.forms import widgets
 from cities.models import City
 from routes.models import Route
 from trains.models import Train

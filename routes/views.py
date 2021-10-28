@@ -10,6 +10,7 @@ from routes.models import Route
 from routes.forms import RouteForm, RouteModelForm
 from routes.utils import get_routes
 
+
 # Create your views here.
 
 
@@ -49,9 +50,9 @@ def add_route(request):
             cities = City.objects.filter(id__in=[from_city_id, to_city_id]).in_bulk()
             form = RouteModelForm(
                 initial={'from_city': cities[from_city_id],
-                        'to_city': cities[to_city_id],
-                        'route_travel_time': total_time,
-                        'trains': qs}
+                         'to_city': cities[to_city_id],
+                         'route_travel_time': total_time,
+                         'trains': qs}
             )
             context['form'] = form
         return render(request, 'routes/create.html', context)

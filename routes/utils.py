@@ -6,8 +6,8 @@ def dfs_path(graph, start, goal):
     из одного города в другой. Вариант посещения
     одного и того же города более одного раза
     не рассматривается."""
-    
-    stack = [(start,[start])]
+
+    stack = [(start, [start])]
     while stack:
         (vertex, path) = stack.pop()
         if vertex in graph.keys():
@@ -17,12 +17,14 @@ def dfs_path(graph, start, goal):
                 else:
                     stack.append((next_, path + [next_]))
 
+
 def get_graph(qs):
     graph = {}
     for q in qs:
         graph.setdefault(q.from_city_id, set())
         graph[q.from_city_id].add(q.to_city_id)
     return graph
+
 
 def get_routes(request, form) -> dict:
     context = {'form': form}
@@ -52,14 +54,14 @@ def get_routes(request, form) -> dict:
     routes = []
     all_trains = {}
     for q in qs:
+        # noinspection PyTypeChecker
         all_trains.setdefault((q.from_city_id, q.to_city_id), [])
         all_trains[(q.from_city_id, q.to_city_id)].append(q)
     for route in correct_routes:
-        tmp = {}
-        tmp['trains'] = []
+        tmp = {'trains': []}
         total_time = 0
         for i in range(len(route) - 1):
-            qs = all_trains[(route[i], route[i+1])]
+            qs = all_trains[(route[i], route[i + 1])]
             q = qs[0]
             total_time += q.travel_time
             tmp['trains'].append(q)
@@ -67,7 +69,7 @@ def get_routes(request, form) -> dict:
         if total_time <= travelig_time:
             routes.append(tmp)
     if not routes:
-        raise ValueError('Время в пути больше заданного') 
+        raise ValueError('Время в пути больше заданного')
     sorted_routes = []
     if len(routes) == 1:
         sorted_routes = routes
